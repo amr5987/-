@@ -1,0 +1,253 @@
+/* إعدادات تنعيم الخطوط وحركة الخلفية */
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-family: 'Cairo', sans-serif;
+    transition: background 0.3s ease, color 0.3s ease;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    position: relative;
+}
+
+:root {
+    --bg-color: #030712;
+    --card-bg: #0b1222;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --accent-color: #00f3ff;
+    --accent-glow: rgba(0, 243, 255, 0.4);
+    --border-color: rgba(0, 243, 255, 0.25);
+}
+
+/* الثيم الفاتح النقي */
+body.light-theme {
+    --bg-color: #f1f5f9;
+    --card-bg: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --accent-color: #0284c7;
+    --accent-glow: rgba(2, 132, 199, 0.3);
+    --border-color: rgba(2, 132, 199, 0.25);
+}
+
+/* خلفية الأنيميشن المستقبلية (أشكال نيون متحركة تدور وتتطاير ببطء) */
+.cyber-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.cyber-bg span {
+    position: absolute;
+    display: block;
+    width: 25px;
+    height: 25px;
+    background: var(--accent-color);
+    box-shadow: 0 0 15px var(--accent-color), 0 0 30px var(--accent-color);
+    opacity: 0.15;
+    animation: floatParticle 20s linear infinite;
+    bottom: -150px;
+    border-radius: 50%;
+}
+
+.cyber-bg span:nth-child(1) { left: 10%; width: 40px; height: 40px; animation-duration: 15s; animation-delay: 0s; }
+.cyber-bg span:nth-child(2) { left: 25%; width: 20px; height: 20px; animation-duration: 22s; animation-delay: 2s; border-radius: 4px; }
+.cyber-bg span:nth-child(3) { left: 40%; width: 50px; height: 50px; animation-duration: 18s; animation-delay: 4s; }
+.cyber-bg span:nth-child(4) { left: 55%; width: 15px; height: 15px; animation-duration: 25s; animation-delay: 1s; }
+.cyber-bg span:nth-child(5) { left: 70%; width: 35px; height: 35px; animation-duration: 20s; animation-delay: 3s; border-radius: 6px; }
+.cyber-bg span:nth-child(6) { left: 85%; width: 25px; height: 25px; animation-duration: 16s; animation-delay: 5s; }
+
+@keyframes floatParticle {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0.15;
+    }
+    50% {
+        opacity: 0.35;
+    }
+    100% {
+        transform: translateY(-110vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* الحاويات */
+.container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 30px;
+    position: relative;
+    z-index: 1;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+header h1, header h2, .surah-meta, .info h3, body {
+    text-shadow: none !important;
+}
+
+/* شبكة العرض */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+/* البطاقات */
+.card, .surah-item, .comment-card, .comments-section {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 20px;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+}
+
+.card:hover, .surah-item:hover {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 20px var(--accent-glow);
+    transform: translateY(-3px);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/* الأيقونات والأرقام */
+.avatar, .surah-num {
+    background: linear-gradient(135deg, #0051ff, var(--accent-color));
+    color: #ffffff;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    flex-shrink: 0;
+}
+
+.surah-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.surah-meta {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-weight: 600;
+}
+
+.surah-actions {
+    display: flex;
+    gap: 12px;
+}
+
+/* الأزرار النيونية */
+.open-btn, .action-btn, #downloadFullBtn, .submit-btn {
+    background: linear-gradient(135deg, #0051ff, var(--accent-color));
+    color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(0, 81, 255, 0.3);
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.open-btn:hover, .action-btn:hover, #downloadFullBtn:hover, .submit-btn:hover {
+    box-shadow: 0 0 25px var(--accent-color);
+    border-color: var(--accent-color);
+    transform: translateY(-2px);
+}
+
+.action-btn.download-btn-icon {
+    padding: 12px 15px;
+}
+
+/* حقول الإدخال */
+input[type="text"], textarea {
+    background-color: var(--card-bg);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 600;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+input[type="text"]:focus, textarea:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 15px var(--accent-glow);
+}
+
+/* المشغل الصوتي العائم */
+#floatingPlayer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--card-bg);
+    border-top: 2px solid var(--accent-color);
+    box-shadow: 0 -5px 25px var(--accent-glow);
+    padding: 15px 30px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    z-index: 1000;
+}
+
+#floatingPlayer.active {
+    display: flex;
+}
+
+#floatingPlayer audio {
+    width: 50%;
+}
+
+/* قسم التعليقات */
+.comments-section {
+    margin-top: 50px;
+    padding: 25px;
+}
+
+.comment-card {
+    margin-top: 15px;
+    border-left: 3px solid var(--accent-color);
+}
+
+/* إخفاء العناصر */
+.hidden {
+    display: none !important;
+}

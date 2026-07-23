@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>القرآن الكريم - الإصدار المستقبلي</title>
+    <!-- خط القاهرة العصري -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- أيقونات FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- مكتبة ضغط الملفات JSZip -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <!-- ربط ملف الـ CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- الخلفية المتحركة التفاعلية (أشكال نيون مستقبلية) -->
+    <div class="cyber-bg">
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+
+    <!-- الواجهة الرئيسية: قائمة القراء -->
+    <div id="mainView" class="container">
+        <header>
+            <h1>القرآن الكريم</h1>
+            <p style="color: var(--text-muted);">بث وتنزيل تلاوات القرآن الكريم بأحدث تقنيات المستقبل</p>
+            
+            <!-- أداة تبديل الثيم -->
+            <button onclick="toggleTheme()" class="action-btn" style="margin-top: 15px;" title="تغيير الثيم">
+                <i id="themeIcon" class="fa-solid fa-sun"></i> وضع الإضاءة
+            </button>
+        </header>
+
+        <!-- قسم المعلومات والبحث -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 25px;">
+            <div style="display: flex; gap: 15px; font-size: 14px; color: var(--text-muted);">
+                <span><i class="fa-solid fa-users"></i> إجمالي القراء: <strong id="reciterCount" style="color: var(--accent-color);">0</strong></span>
+                <span><i class="fa-solid fa-eye"></i> الزيارات: <strong id="siteViews" style="color: var(--accent-color);">0</strong></span>
+                <span><i class="fa-solid fa-headphones"></i> الاستماعات: <strong id="listenCount" style="color: var(--accent-color);">0</strong></span>
+            </div>
+            <div style="width: 300px;">
+                <input type="text" id="searchInput" placeholder="ابحث عن قارئ...">
+            </div>
+        </div>
+
+        <!-- شريط الوقت والتاريخ -->
+        <div class="card" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; text-align: center;">
+            <div><i class="fa-solid fa-clock" style="color: var(--accent-color);"></i> <span id="clockTime">--:--:--</span></div>
+            <div><i class="fa-solid fa-calendar-days" style="color: var(--accent-color);"></i> <span id="gregorianDate">--/--/----</span></div>
+            <div><i class="fa-solid fa-moon" style="color: var(--accent-color);"></i> <span id="hijriDate">--/--/---- هـ</span></div>
+        </div>
+
+        <!-- شبكة عرض القراء -->
+        <div id="recitersContainer" class="grid-container">
+            <!-- يتم تعبئتها تلقائياً عبر JavaScript -->
+        </div>
+
+        <!-- قسم التعليقات -->
+        <div class="comments-section">
+            <h3 style="margin-bottom: 15px;"><i class="fa-solid fa-comments"></i> آراء زوار الموقع</h3>
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+                <input type="text" id="commentUser" placeholder="اسمك الكريم...">
+                <textarea id="commentText" placeholder="اكتب تعليقك أو انطباعك عن الموقع..." rows="3"></textarea>
+                <button onclick="addComment()" class="submit-btn"><i class="fa-solid fa-paper-plane"></i> إرسال التعليق</button>
+            </div>
+            <div id="commentsList">
+                <!-- التعليقات تظهر هنا -->
+            </div>
+        </div>
+    </div>
+
+
+    <!-- واجهة التفاصيل: عرض السور للقارئ المختار (بدون المربع الأزرق وحرف الألف) -->
+    <div id="detailsView" class="container hidden">
+        <header>
+            <button onclick="showMainView()" class="action-btn" style="margin-bottom: 20px;">
+                <i class="fa-solid fa-arrow-right"></i> العودة لقائمة القراء
+            </button>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <h2 id="currentReciterName" style="margin: 0; font-size: 28px;">اسم القارئ</h2>
+                <p id="currentStyle" style="margin: 8px 0 0 0; color: var(--text-muted); font-size: 16px;">نوع الرواية</p>
+            </div>
+
+            <!-- زر تحميل المصحف كاملاً كملف ZIP بضغطة زر -->
+            <button id="downloadFullBtn" class="open-btn" style="font-size: 16px; padding: 15px 30px;">
+                <i class="fa-solid fa-file-arrow-down"></i> تحميل المصحف كاملاً (ملف مضغوط ZIP)
+            </button>
+        </header>
+
+        <!-- حقل بحث داخل سور القارئ -->
+        <div style="margin-bottom: 25px;">
+            <input type="text" id="searchSurahInput" placeholder="ابحث عن سورة...">
+        </div>
+
+        <!-- قائمة السور -->
+        <div id="surahContainer">
+            <!-- يتم تعبئتها تلقائياً عبر JavaScript -->
+        </div>
+    </div>
+
+
+    <!-- المشغل الصوتي العائم -->
+    <div id="floatingPlayer">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div class="avatar" style="width: 40px; height: 40px;"><i class="fa-solid fa-music"></i></div>
+            <div>
+                <h4 id="playingTitle" style="margin: 0; font-size: 14px;">جارِ التشغيل...</h4>
+            </div>
+        </div>
+        <audio id="globalAudio" controls></audio>
+        <button onclick="document.getElementById('floatingPlayer').classList.remove('active'); document.getElementById('globalAudio').pause();" class="action-btn" style="padding: 8px 12px;">
+            <i class="fa-solid fa-xmark"></i> إغلاق
+        </button>
+    </div>
+
+    <!-- ربط ملف الـ JavaScript الرئيسي -->
+    <script src="script.js"></script>
+</body>
+</html>
