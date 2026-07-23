@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- كود إثبات الملكية من جوجل -->
+    <meta name="google-site-verification" content="N7oOoCVPZLWsjgZt7cFWOftWiQuQ-31T9tOBp5Hd588" />
+
     <title>القرآن الكريم - الإصدار المستقبلي</title>
     <!-- خط القاهرة العصري -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <!-- أيقونات FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- مكتبة ضغط الملفات JSZip -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <!-- ربط ملف الـ CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
@@ -71,7 +73,7 @@
     </div>
 
 
-    <!-- واجهة التفاصيل: عرض السور للقارئ المختار (بدون المربع الأزرق وحرف الألف) -->
+    <!-- واجهة التفاصيل: عرض السور للقارئ المختار -->
     <div id="detailsView" class="container hidden">
         <header>
             <button onclick="showMainView()" class="action-btn" style="margin-bottom: 20px;">
@@ -81,11 +83,6 @@
                 <h2 id="currentReciterName" style="margin: 0; font-size: 28px;">اسم القارئ</h2>
                 <p id="currentStyle" style="margin: 8px 0 0 0; color: var(--text-muted); font-size: 16px;">نوع الرواية</p>
             </div>
-
-            <!-- زر تحميل المصحف كاملاً كملف ZIP بضغطة زر -->
-            <button id="downloadFullBtn" class="open-btn" style="font-size: 16px; padding: 15px 30px;">
-                <i class="fa-solid fa-file-arrow-down"></i> تحميل المصحف كاملاً (ملف مضغوط ZIP)
-            </button>
         </header>
 
         <!-- حقل بحث داخل سور القارئ -->
@@ -103,7 +100,7 @@
     <!-- المشغل الصوتي العائم -->
     <div id="floatingPlayer">
         <div style="display: flex; align-items: center; gap: 15px;">
-            <div class="avatar" style="width: 40px; height: 40px;"><i class="fa-solid fa-music"></i></div>
+            <div class="avatar" style="width: 40px; height: 40px; font-size: 16px;"><i class="fa-solid fa-music"></i></div>
             <div>
                 <h4 id="playingTitle" style="margin: 0; font-size: 14px;">جارِ التشغيل...</h4>
             </div>
