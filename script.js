@@ -1,7 +1,6 @@
 let allReciters = [];
 let selectedReciter = null;
 
-// أسماء سور القرآن الكريم كاملة مرتبة
 const surahsNames = [
     "الفاتحة", "البقرة", "آل عمران", "النساء", "المائدة", "الأنعام", "الأعراف", "الأنفال", "التوبة", "يونس",
     "هود", "يوسف", "الرعد", "إبراهيم", "الحجر", "النحل", "الإسراء", "الكهف", "مريم", "طه",
@@ -17,7 +16,6 @@ const surahsNames = [
     "المسد", "الإخلاص", "الفلق", "الناس"
 ];
 
-// العناصر الرئيسية في الصفحة
 const mainView = document.getElementById('mainView');
 const detailsView = document.getElementById('detailsView');
 const recitersContainer = document.getElementById('recitersContainer');
@@ -28,10 +26,8 @@ const globalAudio = document.getElementById('globalAudio');
 const floatingPlayer = document.getElementById('floatingPlayer');
 const playingTitle = document.getElementById('playingTitle');
 
-// 1. تحديث الساعة والتاريخ
 function updateClockAndDates() {
     const now = new Date();
-
     let hours = now.getHours();
     const minutes = now.getMinutes().toString().padStart(2, '0');
     const seconds = now.getSeconds().toString().padStart(2, '0');
@@ -42,9 +38,7 @@ function updateClockAndDates() {
     const formattedHours = hours.toString().padStart(2, '0');
 
     const clockElement = document.getElementById('clockTime');
-    if (clockElement) {
-        clockElement.textContent = `${formattedHours}:${minutes}:${seconds} ${ampm}`;
-    }
+    if (clockElement) clockElement.textContent = `${formattedHours}:${minutes}:${seconds} ${ampm}`;
 
     const gregElement = document.getElementById('gregorianDate');
     if (gregElement) {
@@ -59,15 +53,12 @@ function updateClockAndDates() {
     }
 }
 
-// 2. إدارة عدد الزيارات والاستماعات
 function initStats() {
-    if (!localStorage.getItem('isListenResetDone')) {
+    if (!localStorage.getItem('totalListens')) {
         localStorage.setItem('totalListens', '0');
-        localStorage.setItem('isListenResetDone', 'true');
     }
 
     let visits = parseInt(localStorage.getItem('siteVisits') || '0');
-    
     if (!localStorage.getItem('hasVisitedBefore')) {
         visits += 1;
         localStorage.setItem('siteVisits', visits);
@@ -76,7 +67,6 @@ function initStats() {
     
     const viewsEl = document.getElementById('siteViews');
     if (viewsEl) viewsEl.textContent = visits;
-
     updateListenCountDisplay();
 }
 
@@ -92,10 +82,9 @@ function updateListenCountDisplay() {
     if (listenEl) listenEl.textContent = listens;
 }
 
-// 3. جلب القراء من API
 async function fetchReciters() {
     try {
-        const response = await fetch('https://mp3quran.net/api/v3/reciters?language=ar');
+        const response = await fetch('https://www.mp3quran.net/api/v3/reciters?language=ar');
         const data = await response.json();
         
         allReciters = data.reciters.map(r => {
@@ -117,7 +106,6 @@ async function fetchReciters() {
     }
 }
 
-// 4. عرض قائمة القراء
 function displayReciters(list) {
     if (!recitersContainer) return;
     recitersContainer.innerHTML = '';
@@ -135,91 +123,23 @@ function displayReciters(list) {
             <div class="card-header">
                 <div class="avatar">${firstLetter}</div>
                 <div class="info">
-                    <h3>${reciter.name}</h3>
-                    <p style="color: var(--text-muted); margin: 5px 0 0 0;">${reciter.repetition}</p>
+                    <h3 style="margin:0; font-size:16px;">${reciter.name}</h3>
+                    <p style="color: var(--text-muted); margin: 5px 0 0 0; font-size:13px;">${reciter.repetition}</p>
                 </div>
             </div>
-            <button class="open-btn" style="width: 100%;"><i class="fa-solid fa-list-ul"></i> عرض السور والتحميل</button>
+            <button class="open-btn" style="width: 100%;"><i class="fa-solid fa-list-ul"></i> عرض السور</button>
         `;
         recitersContainer.appendChild(card);
     });
 }
 
-// 5. فتح القارئ وتجهيز زر التحميل لضغط المصحف كاملاً في ملف واحد بضغطة زر
 function openReciter(reciter) {
     selectedReciter = reciter;
-    
     const nameEl = document.getElementById('currentReciterName');
     const styleEl = document.getElementById('currentStyle');
     
     if (nameEl) nameEl.textContent = reciter.name;
     if (styleEl) styleEl.textContent = reciter.repetition;
-
-    const downloadBtn = document.getElementById('downloadFullBtn');
-    if (downloadBtn) {
-        downloadBtn.innerHTML = `<i class="fa-solid fa-file-arrow-down"></i> تحميل المصحف كاملاً (ملف مضغوط ZIP)`;
-        
-        downloadBtn.onclick = async function(e) {
-            e.preventDefault();
-            
-            if (!reciter.server || !reciter.surahList || reciter.surahList.length === 0) {
-                alert("عذراً، روابط التحميل غير متوفرة لهذا القارئ.");
-                return;
-            }
-
-            const originalText = downloadBtn.innerHTML;
-            downloadBtn.disabled = true;
-            downloadBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري إعداد وضغط المصحف...`;
-
-            try {
-                const zip = new JSZip();
-                const folderName = `مصحف_${reciter.name}`;
-                const folder = zip.folder(folderName);
-
-                const promises = reciter.surahList.map(async (surahNum) => {
-                    const surahName = surahsNames[surahNum - 1];
-                    const padNum = surahNum.toString().padStart(3, '0');
-                    const audioUrl = `${reciter.server}${padNum}.mp3`;
-                    const fileName = `${padNum}_سورة_${surahName}.mp3`;
-
-                    try {
-                        const response = await fetch(audioUrl);
-                        const blob = await response.blob();
-                        folder.file(fileName, blob);
-                    } catch (err) {
-                        console.error(`خطأ في تحميل سورة ${surahName}`, err);
-                    }
-                });
-
-                await Promise.all(promises);
-
-                downloadBtn.innerHTML = `<i class="fa-solid fa-box-archive"></i> جاري حفظ الملف المضغوط...`;
-                const content = await zip.generateAsync({ type: "blob" });
-
-                const blobUrl = window.URL.createObjectURL(content);
-                const a = document.createElement('a');
-                a.style.display = 'none';
-                a.href = blobUrl;
-                a.download = `${folderName}.zip`;
-                document.body.appendChild(a);
-                a.click();
-                
-                window.URL.revokeObjectURL(blobUrl);
-                document.body.removeChild(a);
-
-                downloadBtn.innerHTML = `<i class="fa-solid fa-check"></i> تم التحميل بنجاح!`;
-                setTimeout(() => {
-                    downloadBtn.innerHTML = originalText;
-                    downloadBtn.disabled = false;
-                }, 3000);
-
-            } catch (err) {
-                alert("حدث خطأ أثناء ضغط الملفات. حاول مرة أخرى.");
-                downloadBtn.innerHTML = originalText;
-                downloadBtn.disabled = false;
-            }
-        };
-    }
 
     renderSurahs();
     if (mainView) mainView.classList.add('hidden');
@@ -232,7 +152,6 @@ function showMainView() {
     if (mainView) mainView.classList.remove('hidden');
 }
 
-// 6. عرض السور مع دعم التحميل الفردي المباشر
 function renderSurahs(filter = "") {
     if (!surahContainer || !selectedReciter) return;
     surahContainer.innerHTML = "";
@@ -264,7 +183,6 @@ function renderSurahs(filter = "") {
     });
 }
 
-// 7. تشغيل الصوت والاستماع لنهايته بالكامل لتحديث العداد
 function playAudio(url, surahName) {
     if (!globalAudio || !floatingPlayer) return;
     globalAudio.src = url;
@@ -278,7 +196,6 @@ function playAudio(url, surahName) {
     };
 }
 
-// 8. إدارة التعليقات
 function loadComments() {
     const commentsList = document.getElementById('commentsList');
     if (!commentsList) return;
@@ -323,7 +240,6 @@ function addComment() {
     loadComments();
 }
 
-// 9. تبديل الثيم (بلاك / وايت)
 function toggleTheme() {
     const body = document.body;
     const themeBtnIcon = document.getElementById('themeIcon');
@@ -350,7 +266,6 @@ function loadTheme() {
     }
 }
 
-// 10. البحث والتهيئة
 if (searchInput) {
     searchInput.addEventListener('input', (e) => {
         const term = e.target.value.toLowerCase().trim();
