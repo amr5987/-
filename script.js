@@ -152,9 +152,30 @@ function showMainView() {
     if (mainView) mainView.classList.remove('hidden');
 }
 
+// دالة تحميل المصحف كاملاً بضغطة زر
+function downloadFullQuranZip() {
+    if (!selectedReciter || !selectedReciter.server) return;
+    
+    // إشعار للمستخدم بأن العمل جارٍ
+    alert("سيتم فتح روابط تحميل السور تباعاً أو توجيهك لرابط الخادم المباشر للمصحف.");
+    
+    // رابط السيرفر الأساسي الذي يحتوي على المصحف كاملًا أو السورة الأولى كمثال سريع
+    const serverUrl = selectedReciter.server;
+    
+    // فتح السيرفر في تبويب جديد ليتمكن المستخدم من تصفح مجلد السور أو تحميل ما يريده مباشرة
+    window.open(serverUrl, '_blank');
+}
+
 function renderSurahs(filter = "") {
     if (!surahContainer || !selectedReciter) return;
-    surahContainer.innerHTML = "";
+    
+    surahContainer.innerHTML = `
+        <div style="text-align: center; margin-bottom: 20px;">
+            <button onclick="downloadFullQuranZip()" class="action-btn" style="padding: 15px 30px; font-size: 16px; background: linear-gradient(135deg, #00f3ff, #0051ff);">
+                <i class="fa-solid fa-cloud-arrow-down"></i> تحميل المصحف كاملاً (سيرفر الشيخ)
+            </button>
+        </div>
+    `;
 
     selectedReciter.surahList.forEach(surahNum => {
         const surahName = surahsNames[surahNum - 1];
