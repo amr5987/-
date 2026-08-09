@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMRKHALED | Dark Crimson</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+        body {
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000000;
+            overflow: hidden;
+            position: fixed;
+        }
+
+        /* حاوية النجوم في الخلفية */
+        #spaceCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .nebula-glow {
+            position: absolute;
+            width: 150vw; height: 150vh;
+            background: radial-gradient(circle, rgba(255, 0, 0, 0.12) 0%, transparent 70%);
+            animation: circularGlow 10s linear infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes circularGlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .card {
+            background: #0a0000;
+            padding: 35px 30px;
+            border-radius: 24px;
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            z-index: 10;
+            border: 1px solid #330000;
+        }
+
+        /* حاوية الصورة ثابتة بدون أنيميشن */
+        .avatar-container {
+            width: 100px; height: 100px;
+            margin: 0 auto 18px;
+            border-radius: 50%;
+            padding: 3px;
+            background: #ff0000; /* إطار أحمر ثابت */
+        }
+
+        .avatar {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* الأيقونات تدور بتأثير الثعبان */
+        .social-links { display: flex; justify-content: center; gap: 22px; margin-top: 20px; }
+
+        .icon-wrapper {
+            position: relative;
+            width: 56px; height: 56px;
+            border-radius: 50%;
+            padding: 2px;
+            background: conic-gradient(from 0deg, #ff0000, #000, #ff0000);
+            animation: spinSnake 2s linear infinite;
+        }
+
+        .social-icon {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            color: #ff0000;
+            font-size: 22px;
+            background: #000;
+        }
+
+        @keyframes spinSnake {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .header-name {
+            position: absolute; top: 8%;
+            font-size: 52px; font-weight: 900;
+            color: #ff0000; text-shadow: 0 0 10px #ff0000;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="nebula-glow"></div>
+    <canvas id="spaceCanvas"></canvas>
+
+    <div class="header-name">AMRKHALED</div>
+
+    <div class="card">
+        <div class="avatar-container">
+            <div class="avatar"><img src="https://i.ibb.co/p63QrKYZ/image.png" alt="Profile"></div>
+        </div>
+        <h1 style="color: #ff0000; margin-bottom: 20px;">مرحباً بك</h1>
+
+        <div class="social-links">
+            <div class="icon-wrapper"><a href="https://www.facebook.com/share/1BajiMJ2Na/" target="_blank" class="social-icon"><i class="fa-brands fa-facebook-f"></i></a></div>
+            <div class="icon-wrapper"><a href="https://www.tiktok.com/@dbaba_8_?_r=1&_t=ZS-98iqU6x6Gu5" target="_blank" class="social-icon"><i class="fa-brands fa-tiktok"></i></a></div>
+            <div class="icon-wrapper"><a href="https://www.instagram.com/amrkhalled6223?igsh=bzJzdGRycjU3bHVs" target="_blank" class="social-icon"><i class="fa-brands fa-instagram"></i></a></div>
+        </div>
+    </div>
+
+    <audio id="bgAudio" autoplay loop>
+        <source src="https://www.image2url.com/r2/default/audio/1786232269772-4cc73334-04f4-4927-ac19-4c2b15327ceb.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const audio = document.getElementById("bgAudio");
+        window.addEventListener('load', () => {
+            audio.play().catch(() => {
+                document.addEventListener('click', () => { audio.play(); }, { once: true });
+                document.addEventListener('touchstart', () => { audio.play(); }, { once: true });
+            });
+        });
+
+        // توليد وتحريك النجوم الحمراء والبرتقالية في الخلفية
+        const canvas = document.getElementById('spaceCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // إنشاء مصفوفة نجوم بلونين (أحمر وبرتقالي)
+        const stars = Array.from({length: 80}, () => ({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            r: Math.random() * 2 + 0.8,
+            alpha: Math.random(),
+            speed: Math.random() * 0.015 + 0.005,
+            // اختيار عشوائي بين درجات الأحمر والبرتقالي
+            color: Math.random() > 0.5 ? '255, 0, 0' : '255, 140, 0' 
+        }));
+
+        function drawStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            stars.forEach(s => {
+                s.alpha += s.speed;
+                if (s.alpha > 1 || s.alpha < 0.1) {
+                    s.speed = -s.speed; // عكس اتجاه الإضاءة لتنور وتطفي
+                }
+                
+                ctx.fillStyle = `rgba(${s.color}, ${s.alpha})`;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = `rgb(${s.color})`;
+                
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            requestAnimationFrame(drawStars);
+        }
+        drawStars();
+    </script>
+</body>
+</html>
